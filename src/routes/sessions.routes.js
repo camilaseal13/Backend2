@@ -1,29 +1,18 @@
 import { Router } from "express";
 import passport from "passport";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { login, current } from "../controllers/sessions.controller.js";
 
-dotenv.config();
 const router = Router();
 
 router.post(
   "/login",
   passport.authenticate("login", { session: false }),
-  (req, res) => {
-    const user = req.user;
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.send({ status: "success", token });
-  }
+  login
 );
-
 router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.send({ status: "success", user: req.user });
-  }
+  current
 );
 
 export default router;
